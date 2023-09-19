@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { ModalOverlay, ModalDiv } from './Modal.Styled';
 import PropTypes from 'prop-types';
 

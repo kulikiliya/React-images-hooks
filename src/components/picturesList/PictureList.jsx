@@ -1,4 +1,3 @@
-import React from 'react';
 import { PictureItem } from '../pictureItem/PicturesItem';
 import { ListWrapper } from './PictureList.styled';
 import PropTypes from 'prop-types';
@@ -21,5 +20,5 @@ export const PictureList = ({ data = [], handleOpenModal }) => {
 
 PictureList.propTypes = {
   handleOpenModal: PropTypes.func,
-  data: PropTypes.arrayOf(PropTypes.string),
+  data: PropTypes.arrayOf(PropTypes.object),
 };

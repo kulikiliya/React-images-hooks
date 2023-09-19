@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Header } from './header/Header';
 import { PictureList } from './picturesList/PictureList';
 import { AddMoreButton } from './addMoreButton/AddMoreButton';
@@ -25,7 +25,6 @@ export const Pictures = () => {
 
   const onLoadMore = () => {
     setPage(prev => prev + 1);
-    console.log('Hi');
   };
 
   const handleOpenModal = (img, title) => {
@@ -36,7 +35,6 @@ export const Pictures = () => {
 
   const fetchData = async (per_page, page, q) => {
     const { hits, totalHits } = await getProducts({ per_page, page, q });
-    console.log(hits);
     setHits(prev => [...prev, ...hits]);
     setTotalHits(totalHits);
   };
