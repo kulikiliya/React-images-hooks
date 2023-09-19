@@ -9,7 +9,7 @@ import { Wrapper, Loader } from './Pictures.styled';
 
 export const Pictures = () => {
   const [hits, setHits] = useState([]);
-  const [per_page, setPerpage] = useState(12);
+  const [per_page] = useState(12);
   const [page, setPage] = useState(1);
   const [q, setQ] = useState('');
   const [isOpen, setIsOpen] = useState(false);
