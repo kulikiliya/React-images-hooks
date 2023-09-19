@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {
   HeaderWrapper,
   HeaderForm,
@@ -8,45 +8,40 @@ import {
 } from './Header.styled';
 import PropTypes from 'prop-types';
 
-export class Header extends Component {
-  state = {
-    name: '',
+export const Header = ({ newQuerry }) => {
+  const [name, setName] = useState('');
+
+  const handleInput = e => {
+    setName(e.target.value);
   };
 
-  handleInput = e => {
-    this.setState({ [e.target.name]: e.target.value });
-    console.log(this.state.name);
-  };
-
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    console.log(this.state.name);
-    this.props.newQuerry(this.state.name);
+    console.log(name);
+    newQuerry(name);
   };
 
-  render() {
-    return (
-      <HeaderWrapper>
-        <HeaderForm onSubmit={this.handleSubmit}>
-          <Button>
-            <ButtonLable>Search</ButtonLable>
-          </Button>
+  return (
+    <HeaderWrapper>
+      <HeaderForm onSubmit={handleSubmit}>
+        <Button>
+          <ButtonLable>Search</ButtonLable>
+        </Button>
 
-          <InputFiled
-            onChange={this.handleInput}
-            className="input"
-            value={this.state.name}
-            type="text"
-            name="name"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-          />
-        </HeaderForm>
-      </HeaderWrapper>
-    );
-  }
-}
+        <InputFiled
+          onChange={handleInput}
+          className="input"
+          value={name}
+          type="text"
+          name="name"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+        />
+      </HeaderForm>
+    </HeaderWrapper>
+  );
+};
 
 Header.propTypes = {
   newQuerry: PropTypes.func,

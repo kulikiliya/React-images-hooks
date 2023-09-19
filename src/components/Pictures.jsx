@@ -1,102 +1,84 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Header } from './header/Header';
 import { PictureList } from './picturesList/PictureList';
 import { AddMoreButton } from './addMoreButton/AddMoreButton';
 import { getProducts } from '../helpers/pixabayAPI';
-import Modal from './modal/Modal';
+import { Modal } from './modal/Modal';
 import { FidgetSpinner } from 'react-loader-spinner';
 import { Wrapper, Loader } from './Pictures.styled';
 
-export class Pictures extends Component {
-  state = {
-    hits: [],
-    per_page: 12,
-    step: 1,
-    page: 1,
-    q: '',
-    isOpen: false,
-    currentImg: null,
-    currentTitle: null,
-    loading: false,
-    totalHits: '',
+export const Pictures = () => {
+  const [hits, setHits] = useState([]);
+  const [per_page, setPerpage] = useState(12);
+  const [page, setPage] = useState(1);
+  const [q, setQ] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentImg, setCurrentImg] = useState(null);
+  const [currentTitle, setCurrentTitle] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [totalHits, setTotalHits] = useState('');
+
+  const changeQuerry = name => {
+    setQ(name);
+    setHits([]);
   };
 
-  changeQuerry = name => {
-    this.setState({ q: name, hits: [] });
-    console.log(this.state.q);
-  };
-
-  onLoadMore = () => {
-    this.setState(prev => ({
-      page: prev.page + this.state.step,
-    }));
+  const onLoadMore = () => {
+    setPage(prev => prev + 1);
     console.log('Hi');
   };
 
-  handleOpenModal = (img, title) => {
-    this.setState(prev => ({
-      isOpen: !prev.isOpen,
-      currentImg: img,
-      currentTitle: title,
-    }));
+  const handleOpenModal = (img, title) => {
+    setIsOpen(prev => !prev);
+    setCurrentImg(img);
+    setCurrentTitle(title);
   };
 
-  fetchData = async (per_page, page, q) => {
+  const fetchData = async (per_page, page, q) => {
     const { hits, totalHits } = await getProducts({ per_page, page, q });
     console.log(hits);
-    this.setState(prev => ({ hits: [...prev.hits, ...hits], totalHits }));
+    setHits(prev => [...prev, ...hits]);
+    setTotalHits(totalHits);
   };
 
-  async componentDidUpdate(_, prevState) {
-    const { per_page, page, q } = this.state;
-
-    if (prevState.q !== q || prevState.page !== page) {
-      this.setState({ loading: true });
-      try {
-        await this.fetchData(per_page, page, q);
-      } catch (error) {
-      } finally {
-        this.setState({ loading: false });
-      }
+  useEffect(() => {
+    setLoading(true);
+    try {
+      fetchData(per_page, page, q);
+    } catch (error) {
+    } finally {
+      setLoading(false);
     }
-  }
+  }, [q, page, per_page]);
 
-  render() {
-    const { hits, totalHits, isOpen, currentImg, currentTitle, loading } =
-      this.state;
-    return (
-      <Wrapper>
-        <Header newQuerry={this.changeQuerry} />
-        <main>
-          <PictureList data={hits} handleOpenModal={this.handleOpenModal} />
-          {loading && (
-            <Loader>
-              <FidgetSpinner
-                visible={true}
-                height="80"
-                width="80"
-                ariaLabel="dna-loading"
-                wrapperStyle={{}}
-                wrapperClass="dna-wrapper"
-                ballColors={['#ff0000', '#00ff00', '#0000ff']}
-                backgroundColor="#F4442E"
-              />
-            </Loader>
-          )}
-          {hits.length !== 0 && hits.length < totalHits ? (
-            <AddMoreButton loadMore={this.onLoadMore} />
-          ) : null}
-          {isOpen && (
-            <Modal
-              title={currentTitle}
-              close={this.handleOpenModal}
-              isOpen={isOpen}
-            >
-              <img src={currentImg} alt={currentTitle} />
-            </Modal>
-          )}
-        </main>
-      </Wrapper>
-    );
-  }
-}
+  return (
+    <Wrapper>
+      <Header newQuerry={changeQuerry} />
+      <main>
+        <PictureList data={hits} handleOpenModal={handleOpenModal} />
+        {loading && (
+          <Loader>
+            <FidgetSpinner
+              visible={true}
+              height="80"
+              width="80"
+              ariaLabel="dna-loading"
+              wrapperStyle={{}}
+              wrapperClass="dna-wrapper"
+              ballColors={['#ff0000', '#00ff00', '#0000ff']}
+              backgroundColor="#F4442E"
+            />
+          </Loader>
+        )}
+        {hits.length !== 0 && hits.length < totalHits ? (
+          <AddMoreButton loadMore={onLoadMore} />
+        ) : null}
+        {isOpen && (
+          <Modal title={currentTitle} close={handleOpenModal} isOpen={isOpen}>
+            <img src={currentImg} alt={currentTitle} />
+          </Modal>
+        )}
+      </main>
+    </Wrapper>
+  );
+};
