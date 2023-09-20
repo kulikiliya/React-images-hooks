@@ -21,6 +21,7 @@ export const Pictures = () => {
   const changeQuerry = name => {
     setQ(name);
     setHits([]);
+    setPage(1);
   };
 
   const onLoadMore = () => {
